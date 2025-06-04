@@ -1,0 +1,47 @@
+name: Validate Python 3.13 Dependencies
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-requirements:
+    name: Install & Test requirements.txt on Python 3.13
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: (Optional) Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Smoke-test core imports
+        run: |
+          python - <<EOF
+          import streamlit
+          import pandas
+          import numpy
+          import sklearn
+          import joblib
+          print("✅ All core imports succeeded under Python 3.13")
+          EOF
