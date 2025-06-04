@@ -13,7 +13,7 @@ def load_objects():
     return preprocessor, model
 
 preprocessor, model = load_objects()
-
+st.title("My Interactive Prediction Tool")
 # ─── Keyword → Category mapping ────────────────────────────────────────────────
 keyword_map = {
     1: ["rebuild"],
